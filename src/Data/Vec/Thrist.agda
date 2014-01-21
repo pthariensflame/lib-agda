@@ -312,9 +312,8 @@ module Props {i j k} {I : Set i} (C-setoid : Ix.Setoid (I × I) j k) where
   foldr-∷-cancel {zero} [] = ℓlift tt
   foldr-∷-cancel {suc n} (x₁ ∷ cs) = ≈-refl ,′ foldr-∷-cancel cs
   
-  foldl-++[⌣]-cancel : {n : ℕ} → {x : I} → {y : I} → (cs : Thrist C n x y) → foldl {A = Thrist C} _++[_] [] cs ≋ cs
-  foldl-++[⌣]-cancel {zero} [] = ℓlift tt
-  foldl-++[⌣]-cancel {suc n} {x} {y} (c ∷ cs) = {!!}
+  {-foldl-++[⌣]-cancel : {n : ℕ} → {x : I} → {y : I} → (cs : Thrist C n x y) → foldl {A = Thrist C} _++[_] [] cs ≋ cs
+  foldl-++[⌣]-cancel xs = ?-}
 
 open Props public
 
