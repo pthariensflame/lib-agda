@@ -1,0 +1,6 @@
+*.agdai
+html/
+.boring
+Everything.*
+dist/
+*~
