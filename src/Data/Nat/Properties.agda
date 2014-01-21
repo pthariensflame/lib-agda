@@ -432,9 +432,8 @@ m≤m⊔n (suc m) (suc n) = s≤s $ m≤m⊔n m n
   k      □
 
 ≰⇒> : _≰_ ⇒ _>_
-≰⇒> {zero}          z≰n with z≰n z≤n
-... | ()
-≰⇒> {suc m} {zero}  _   = s≤s z≤n
+≰⇒> {zero} z≰n = ⊥-elim (z≰n z≤n)
+≰⇒> {suc m} {zero} _ = s≤s z≤n
 ≰⇒> {suc m} {suc n} m≰n = s≤s (≰⇒> (m≰n ∘ s≤s))
 
 ≤×≢⇒< : (_≤_ -×- _≢_) ⇒ _<_
