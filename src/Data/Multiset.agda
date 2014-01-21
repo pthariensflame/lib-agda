@@ -1,13 +1,12 @@
 ------------------------------------------------------------------------
 -- The Agda standard library
 --
--- Strongly-typed multisets (bags)
+-- Strongly typed multisets (bags)
 ------------------------------------------------------------------------
 
 module Data.Multiset where
 open import Level renaming ( zero to zer ; suc to succ )
 open import Function
-open import Quantifiers using ( ≤×≢⇒< )
 open import Function.Inverse using ( _↔_ )
 open import Algebra
 open import Algebra.Structures
@@ -21,8 +20,8 @@ open import Relation.Nullary
 open import Relation.Nullary.Decidable hiding ( map )
 open import Relation.Binary
 open import Relation.Binary.PropositionalEquality using ( _≡_ ; _≢_ ; refl ; cong ; cong₂ )
-open import Data.Nat.Properties using ( ≰⇒> )
-open IsDistributiveLattice Data.Nat.Properties.isDistributiveLattice using () renaming ( ∧-cong to max-cong ; ∨-cong to min-cong ; ∧-comm to max-comm ; ∨-comm to min-comm ; ∧-assoc to max-assoc ; ∨-assoc to min-assoc ; absorptive to ℕ-absorptive )
+open import Data.Nat.Properties using ( ≰⇒> ; ≤×≢⇒< )
+open IsDistributiveLattice Data.Nat.Properties.isDistributiveLattice using () renaming ( ∧-cong to max-cong ; ∨-cong to min-cong ; ∧-comm to max-comm ; ∨-comm to min-comm ; ∧-assoc to max-assoc ; ∨-assoc to min-assoc ; absorptive to min-max-absorptive )
 open CommutativeSemiringWithoutOne Data.Nat.Properties.⊔-⊓-0-commutativeSemiringWithoutOne using () renaming ( distrib to min-max-distrib ; zero to min-0-zero ; setoid to ℕ-Setoid )
 open Setoid ℕ-Setoid using () renaming ( sym to ℕ-sym ; trans to ℕ-trans )
 open DecTotalOrder ≤-decTotalOrder using () renaming ( reflexive to ≤-reflexive ; trans to ≤-trans ; antisym to ≤-antisym ; ≤-resp-≈ to ≤-resp-≡ )
@@ -210,10 +209,10 @@ distributiveLattice X = record {
                               ∧-cong = λ nu-≡-nx nv-≡-ny q → max-cong (nu-≡-nx q) (nv-≡-ny q);
                               absorptive =
                                 (λ x y q →
-                                   proj₁ ℕ-absorptive (number x hasOf q) (number y hasOf q))
+                                   proj₁ min-max-absorptive (number x hasOf q) (number y hasOf q))
                                 ,
                                 (λ x y q →
-                                   proj₂ ℕ-absorptive (number x hasOf q) (number y hasOf q)) };
+                                   proj₂ min-max-absorptive (number x hasOf q) (number y hasOf q)) };
                             ∨-∧-distribʳ =
                               λ z x y q →
                                 proj₂ min-max-distrib (number z hasOf q) (number x hasOf q)
