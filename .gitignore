@@ -1,8 +1,9 @@
 dist
 html
-Everything.agda
+Everything.*
 *.agdai
 *.agda.el
 *.lagda.el
 .*.swp
 *~
+dep-graph.*
