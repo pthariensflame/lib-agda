@@ -13,7 +13,7 @@ open import Data.Nat as Nat
 open ≤-Reasoning
   renaming (begin_ to start_; _∎ to _□; _≡⟨_⟩_ to _≡⟨_⟩'_)
 open import Relation.Binary
-open DecTotalOrder Nat.decTotalOrder using () renaming (refl to ≤-refl)
+open DecTotalOrder Nat.decTotalOrder using () renaming (refl to ≤-refl; trans to ≤-trans)
 open import Function
 open import Algebra
 open import Algebra.Structures
@@ -22,8 +22,9 @@ open import Relation.Binary.PropositionalEquality as PropEq
   using (_≡_; _≢_; refl; sym; cong; cong₂)
 open PropEq.≡-Reasoning
 import Algebra.FunctionProperties as P; open P (_≡_ {A = ℕ})
-open import Data.Product
+open import Data.Product hiding (∃!)
 open import Data.Sum
+open import Data.Empty
 
 n+0≡n : RightIdentity 0 _+_
 n+0≡n zero    = refl
@@ -435,6 +436,19 @@ m≤m⊔n (suc m) (suc n) = s≤s $ m≤m⊔n m n
 ... | ()
 ≰⇒> {suc m} {zero}  _   = s≤s z≤n
 ≰⇒> {suc m} {suc n} m≰n = s≤s (≰⇒> (m≰n ∘ s≤s))
+
+≤×≢⇒< : (_≤_ -×- _≢_) ⇒ _<_
+≤×≢⇒< {zero} {zero} (z≤n , 0≢0) = ⊥-elim (0≢0 refl)
+≤×≢⇒< {zero} {suc _} (z≤n , _) = s≤s z≤n
+≤×≢⇒< {suc _} {zero} (() , _)
+≤×≢⇒< {suc x} {suc y} (s≤s x≤y , 1+x≢1+y) = s≤s (≤×≢⇒< {x} {y} (x≤y , (λ x≡y → 1+x≢1+y (cong suc x≡y))))
+
+<⇒≤×≢ : _<_ ⇒ (_≤_ -×- _≢_)
+<⇒≤×≢ {zero} {zero} ()
+<⇒≤×≢ {zero} {suc y} (s≤s 0<y) = ≤-trans 0<y (n≤1+n y) , (λ ())
+<⇒≤×≢ {suc _} {zero} ()
+<⇒≤×≢ {suc x} {suc y} (s≤s x<y) = s≤s (≤-trans (n≤1+n x) x<y) ,
+                                    (λ 1+x≡1+y → proj₂ (<⇒≤×≢ {x} {y} x<y) (cong pred 1+x≡1+y))
 
 ------------------------------------------------------------------------
 -- (ℕ, _≡_, _<_) is a strict total order
