@@ -1,6 +1,8 @@
+dist
+html
+Everything.agda
 *.agdai
-html/
-.boring
-Everything.*
-dist/
+*.agda.el
+*.lagda.el
+.*.swp
 *~
