@@ -15,6 +15,11 @@ import Relation.Nullary.Core as Core
 
 open Core public using (¬_)
 
+infix 3 ¬-_
+
+¬-_ : ∀ {a b ℓ} {A : Set a} {B : Set b} → (A → B → Set ℓ) → (A → B → Set ℓ)
+(¬- f) x y = ¬ f x y
+
 ------------------------------------------------------------------------
 -- Decidable relations
 

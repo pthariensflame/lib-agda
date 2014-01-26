@@ -99,3 +99,8 @@ From ⇨ To = setoid From (B.Setoid.indexedSetoid To)
     ; trans = λ f∼g g∼h x → trans (f∼g x) (g∼h x)
     }
   } where open I.Setoid To
+
+-- The non-dependent version of ≡-setoid
+
+_⇨′_ : ∀ {f t₁ t₂} → (From : Set f) → B.Setoid t₁ t₂ → B.Setoid _ _
+From ⇨′ To = ≡-setoid From (B.Setoid.indexedSetoid To)

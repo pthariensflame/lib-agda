@@ -89,7 +89,7 @@ _-[_]-_ : ∀ {a b c d e} {A : Set a} {B : Set b} {C : Set c}
 f -[ _*_ ]- g = λ x y → f x y * g x y
 
 -- In basic Agda you cannot annotate every subexpression with a type
--- signature. This function (and associated syntax) can be used instead.
+-- signature. This function (and its associated syntax) can be used instead.
 
 _∋_ : ∀ {a} (A : Set a) → A → A
 A ∋ x = x
