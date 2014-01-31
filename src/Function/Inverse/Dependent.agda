@@ -80,10 +80,32 @@ sym inv = record {
             left-inverse-of = Inverse.right-inverse-of inv;
             right-inverse-of = Inverse.left-inverse-of inv }
 
-{-
 trans : ∀{iℓ aℓ a≈ℓ} {I : Set iℓ} {A-setoid : Ix.Setoid I aℓ a≈ℓ}
           {jℓ bℓ b≈ℓ} {J : Set jℓ} {B-setoid : Ix.Setoid J bℓ b≈ℓ}
           {kℓ cℓ c≈ℓ} {K : Set kℓ} {C-setoid : Ix.Setoid K cℓ c≈ℓ} →
           Inverse A-setoid B-setoid →
           Inverse B-setoid C-setoid → Inverse A-setoid C-setoid
--}
+trans invₗ invᵣ = record {
+                    to-index =
+                      λ {v} →
+                        record {
+                        _⟨$⟩_ = λ x → Inverse.to-index invᵣ ⟨$⟩ (Inverse.to invₗ ⟨$⟩ x);
+                        cong = λ {x} {y} x≈y → {!!} };
+                    from-index =
+                      λ {w} →
+                        record {
+                        _⟨$⟩_ =
+                          λ x → Inverse.from-index invₗ ⟨$⟩ (Inverse.from invᵣ ⟨$⟩ x);
+                        cong = λ {x} {y} x≈y → {!!} };
+                    to =
+                      λ {v} →
+                        record {
+                        _⟨$⟩_ = λ x → Inverse.to invᵣ ⟨$⟩ (Inverse.to invₗ ⟨$⟩ x);
+                        cong = λ {x} {y} x≈y → {!!} };
+                    from =
+                      λ {w} →
+                        record {
+                        _⟨$⟩_ = λ x → Inverse.from invₗ ⟨$⟩ (Inverse.from invᵣ ⟨$⟩ x);
+                        cong = λ {x} {y} x≈y → {!!} };
+                    left-inverse-of = {!!};
+                    right-inverse-of = {!!} }
