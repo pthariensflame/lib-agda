@@ -43,8 +43,8 @@ _∘_ : ∀ {a₁ a₂} {A : B.Setoid a₁ a₂}
         {c₁ c₂} {C : B.Setoid c₁ c₂} →
       B ⟶ C → A ⟶ B → A ⟶ C
 f ∘ g = record
-  { _⟨$⟩_ = Fun._∘_ (_⟨$⟩_ f) (_⟨$⟩_ g)
-  ; cong  = Fun._∘_ (cong  f) (cong  g)
+  { _⟨$⟩_ = Fun._∘′_ (_⟨$⟩_ f) (_⟨$⟩_ g)
+  ; cong  = Fun._∘′_ (cong  f) (cong  g)
   }
 
 -- Constant equality-preserving function.
