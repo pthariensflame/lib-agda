@@ -13,7 +13,7 @@ import Function.Inverse as Bas
 open import Function using ( const ; _⟨_⟩_ ; _⟨′_‵⟩_ ; _∋_ ; ∋-syntax )
 open import Data.Unit using ( ⊤ ; tt ) renaming ( setoid to ⊤-setoid )
 open import Data.Product using ( _×_ ; proj₁ ; proj₂ ; _,_ ; _,′_ )
-open import Relation.Binary.PropositionalEquality using ( _≡_ ; subst ; subst-eq ) renaming ( refl to ≡-refl ; setoid to ≡-setoid )
+open import Relation.Binary.PropositionalEquality using ( _≡_ ; subst ; subst-eq ) renaming ( refl to ≡-refl ; setoid to ≡-setoid ; cong to ≡-cong )
 
 record Inverse {iℓ aℓ a≈ℓ} {I : Set iℓ} (A-setoid : Ix.Setoid I aℓ a≈ℓ)
                {jℓ bℓ b≈ℓ} {J : Set jℓ} (B-setoid : Ix.Setoid J bℓ b≈ℓ)
