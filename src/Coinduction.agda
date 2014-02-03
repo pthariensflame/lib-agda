@@ -1,36 +1,64 @@
 ------------------------------------------------------------------------
 -- The Agda standard library
 --
--- Basic types related to coinduction
+-- Basic types related to coinduction, and some properties of them
 ------------------------------------------------------------------------
 
 module Coinduction where
 
-import Level
+open import Level
+open import Category.Monad
+open import Relation.Binary.Core
+
+-- just a convenient way to section out the universe level
+module _ {a} where
 
 ------------------------------------------------------------------------
 -- A type used to make recursive arguments coinductive
 
-infix 1000 ♯_
+  infix 1000 ♯_
 
-postulate
-  ∞  : ∀ {a} (A : Set a) → Set a
-  ♯_ : ∀ {a} {A : Set a} → A → ∞ A
-  ♭  : ∀ {a} {A : Set a} → ∞ A → A
+  postulate
+    ∞  : (A : Set a) → Set a
+    ♯_ : {A : Set a} → A → ∞ A
+    ♭  : {A : Set a} → ∞ A → A
 
 {-# BUILTIN INFINITY ∞  #-}
 {-# BUILTIN SHARP    ♯_ #-}
 {-# BUILTIN FLAT     ♭  #-}
 
+-- just a convenient way to section out the universe level (again)
+module _ {a} where
+
+  monad : RawMonad (∞ {a})
+  monad = record
+    { return = ♯_
+    ; _>>=_ = λ x f → ♯ ♭ (f (♭ x))
+    }
+
+  open RawMonad monad public
+
+------------------------------------------------------------------------
+-- A coinductive adaptation of propositional equality
+  
+  infix 1000 ♯≡_
+
+  record _∞≡_ {A : Set a} (x : ∞ A) (y : ∞ A) : Set a where
+    constructor ♯≡_
+    field
+      ♭≡ : ∞ (♭ x ≡ ♭ y)
+
+  open _∞≡_ public
+
 ------------------------------------------------------------------------
 -- Rec, a type which is analogous to the Rec type constructor used in
 -- (the current version of) ΠΣ
 
-data Rec {a} (A : ∞ (Set a)) : Set a where
-  fold : (x : ♭ A) → Rec A
+  data Rec (A : ∞ (Set a)) : Set a where
+    fold : (x : ♭ A) → Rec A
 
-unfold : ∀ {a} {A : ∞ (Set a)} → Rec A → ♭ A
-unfold (fold x) = x
+  unfold : {A : ∞ (Set a)} → Rec A → ♭ A
+  unfold (fold x) = x
 
 {-
 

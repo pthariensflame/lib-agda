@@ -7,7 +7,7 @@
 module Data.Colist where
 
 open import Category.Monad
-open import Coinduction
+open import Coinduction        hiding (_<$>_)
 open import Data.Bool          using (Bool; true; false)
 open import Data.Empty         using (⊥)
 open import Data.Maybe         using (Maybe; nothing; just)

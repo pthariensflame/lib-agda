@@ -6,7 +6,7 @@
 
 module IO where
 
-open import Coinduction
+open import Coinduction hiding (return; _>>=_; _>>_)
 open import Data.Unit
 open import Data.String
 open import Data.Colist

@@ -6,7 +6,7 @@
 
 module Category.Monad.Partiality where
 
-open import Coinduction
+open import Coinduction hiding (monad; _<$>_; _>>=_)
 open import Category.Monad
 open import Data.Bool
 open import Data.Nat using (ℕ; zero; suc; _+_)
@@ -28,7 +28,7 @@ data _⊥ {a} (A : Set a) : Set a where
   now   : (x : A) → A ⊥
   later : (x : ∞ (A ⊥)) → A ⊥
 
-monad : ∀ {f} → RawMonad {f = f} _⊥
+monad : ∀ {f} → RawMonad (_⊥ {f})
 monad = record
   { return = now
   ; _>>=_  = _>>=_
