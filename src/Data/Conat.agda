@@ -137,11 +137,11 @@ twice (suc n) = suc (♯ (suc (♯ twice (♭ n))))
 
 twice-even : (n : Coℕ) → even (twice n)
 twice-even zero = zero
-twice-even (suc n) = suc (♯ (suc (♯ twice-even (♭ n))))
+twice-even (suc n) = suc (♯ suc (♯ twice-even (♭ n)))
 
 suc-twice-odd : (n : Coℕ) → odd (suc′ (twice n))
 suc-twice-odd n = suc (♯ twice-even n)
 
-pred-twice-odd : (n : Coℕ) ⦃ p : fromℕ 1 ≤ twice n ⦄ → ∞ (odd (♭ (pred (twice n))))
-pred-twice-odd zero ⦃()⦄
-pred-twice-odd (suc n) ⦃ s≤s 1≤n ⦄ = ♯ (suc (♯ (twice-even (♭ n))))
+pred-twice-odd : (n : Coℕ) ⦃ p : fromℕ 1 ≤ twice n ⦄ → ∞ (odd (♭ (pred (twice n) ⦃ p ⦄)))
+pred-twice-odd zero {{()}}
+pred-twice-odd (suc n) {{s≤s m≤n}} = ♯ suc (♯ twice-even (♭ n))
