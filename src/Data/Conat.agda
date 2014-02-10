@@ -7,6 +7,7 @@
 module Data.Conat where
 
 open import Coinduction
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Nat using (ℕ; zero; suc)
 open import Relation.Binary
 
@@ -90,15 +91,15 @@ poset = record
   where
   reflexive : _≈_ ⇒ _≤_
   reflexive zero = z≤n
-  reflexive (suc m≈n) = s≤s (♯ (reflexive (♭ m≈n)))
+  reflexive (suc m≈n) = s≤s (♯ reflexive (♭ m≈n))
 
   trans : Transitive _≤_
   trans z≤n _ = z≤n
-  trans (s≤s m≤n) (s≤s n≤p) = s≤s (♯ (trans (♭ m≤n) (♭ n≤p)))
+  trans (s≤s m≤n) (s≤s n≤p) = s≤s (♯ trans (♭ m≤n) (♭ n≤p))
 
   antisym : Antisymmetric _≈_ _≤_
   antisym z≤n z≤n = zero
-  antisym (s≤s m≤n) (s≤s n≤m) = suc (♯ (antisym (♭ m≤n) (♭ n≤m)))
+  antisym (s≤s m≤n) (s≤s n≤m) = suc (♯ antisym (♭ m≤n) (♭ n≤m))
 
 ------------------------------------------------------------------------
 -- More operations
@@ -107,8 +108,16 @@ pred : (n : Coℕ) ⦃ p : fromℕ 1 ≤ n ⦄ → ∞ Coℕ
 pred zero ⦃()⦄
 pred (suc n) ⦃ s≤s _ ⦄ = n
 
+twice : Coℕ → Coℕ
+twice zero = zero
+twice (suc n) = suc (♯ suc (♯ twice (♭ n)))
+
 ------------------------------------------------------------------------
 -- Other properties
+
+n≤∞ : ∀ n → n ≤ ∞ℕ
+n≤∞ zero = z≤n
+n≤∞ (suc n) = s≤s (♯ n≤∞ (♭ n))
 
 mutual
   data even : Coℕ → Set where
@@ -125,15 +134,15 @@ mutual
   odd∞ : odd ∞ℕ
   odd∞ = suc (♯ even∞)
 
+even×odd⇒∞ : ∀ {n} → even n → odd n → n ≈ ∞ℕ
+even×odd⇒∞ {zero} zero ()
+even×odd⇒∞ {suc n} (suc pₗ) (suc pᵣ) = suc (♯ even×odd⇒∞ {♭ n} (♭ pᵣ) (♭ pₗ))
+
 even-id→even-suc² : {n : Coℕ} → even n → even (suc′ (suc′ n))
 even-id→even-suc² p = suc (♯ suc (♯ p))
 
 odd-id→odd-suc² : {n : Coℕ} → odd n → odd (suc′ (suc′ n))
 odd-id→odd-suc² p = suc (♯ suc (♯ p))
-
-twice : Coℕ → Coℕ
-twice zero = zero
-twice (suc n) = suc (♯ (suc (♯ twice (♭ n))))
 
 twice-even : (n : Coℕ) → even (twice n)
 twice-even zero = zero
@@ -143,5 +152,9 @@ suc-twice-odd : (n : Coℕ) → odd (suc′ (twice n))
 suc-twice-odd n = suc (♯ twice-even n)
 
 pred-twice-odd : (n : Coℕ) ⦃ p : fromℕ 1 ≤ twice n ⦄ → ∞ (odd (♭ (pred (twice n) ⦃ p ⦄)))
-pred-twice-odd zero {{()}}
-pred-twice-odd (suc n) {{s≤s m≤n}} = ♯ suc (♯ twice-even (♭ n))
+pred-twice-odd zero ⦃()⦄
+pred-twice-odd (suc n) ⦃ s≤s m≤n ⦄ = ♯ suc (♯ twice-even (♭ n))
+
+parity-suc-alt : ∀ {n} → even (♭ n) ⊎ odd (♭ n) → even (suc n) ⊎ odd (suc n)
+parity-suc-alt (inj₁ p) = inj₂ (suc (♯ p))
+parity-suc-alt (inj₂ p) = inj₁ (suc (♯ p))
