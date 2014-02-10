@@ -6,7 +6,7 @@
 
 module Data.Stream where
 
-open import Coinduction hiding (zipWith)
+open import Coinduction hiding (zipWith; preorder; setoid)
 open import Data.Colist using (Colist; []; _∷_)
 open import Data.Vec    using (Vec;    []; _∷_)
 open import Data.Nat using (ℕ; zero; suc)
@@ -135,6 +135,9 @@ setoid A = record
 
   trans : Transitive _≈_
   trans (x ∷ xs≈) (.x ∷ ys≈) = x ∷ ♯ trans (♭ xs≈) (♭ ys≈)
+
+module _ (A : Set) where
+  open Setoid (setoid A) public using (preorder)
 
 map-cong : ∀ {A B} (f : A → B) {xs ys} →
            xs ≈ ys → map f xs ≈ map f ys

@@ -6,7 +6,7 @@
 
 module Category.Monad.Partiality where
 
-open import Coinduction hiding (monad; _<$>_; _>>=_)
+open import Coinduction hiding (monad; _<$>_; _>>=_; preorder; setoid)
 open import Category.Monad
 open import Data.Bool
 open import Data.Nat using (ℕ; zero; suc; _+_)

@@ -6,7 +6,7 @@
 
 module Data.Covec where
 
-open import Coinduction
+open import Coinduction hiding (preorder; setoid)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Conat as Coℕ using (Coℕ; zero; suc; _+_)
 open import Data.Cofin using (Cofin; zero; suc)
@@ -118,6 +118,9 @@ setoid A n = record
   trans : ∀ {A n} → Transitive (_≈_ {A} {n})
   trans []        []         = []
   trans (x ∷ xs≈) (.x ∷ ys≈) = x ∷ ♯ trans (♭ xs≈) (♭ ys≈)
+
+module _ (A : Set) (n : Coℕ) where
+  open Setoid (setoid A n) public using (preorder)
 
 poset : Set → Coℕ → Poset _ _ _
 poset A n = record
