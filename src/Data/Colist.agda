@@ -7,7 +7,7 @@
 module Data.Colist where
 
 open import Category.Monad
-open import Coinduction        hiding (_<$>_)
+open import Coinduction        hiding (_<$>_; preorder; setoid)
 open import Data.Bool          using (Bool; true; false)
 open import Data.Empty         using (⊥)
 open import Data.Maybe         using (Maybe; nothing; just)
@@ -133,6 +133,9 @@ setoid A = record
   trans : Transitive _≈_
   trans []        []         = []
   trans (x ∷ xs≈) (.x ∷ ys≈) = x ∷ ♯ trans (♭ xs≈) (♭ ys≈)
+
+module _ {ℓ} {A : Set ℓ} where
+  open Setoid (setoid A) using (preorder)
 
 module ≈-Reasoning where
   import Relation.Binary.EqReasoning as EqR

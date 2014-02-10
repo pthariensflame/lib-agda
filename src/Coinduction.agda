@@ -8,7 +8,8 @@ module Coinduction where
 
 open import Level
 open import Category.Monad
-open import Relation.Binary.Core
+open import Relation.Binary
+open import Relation.Binary.PropositionalEquality hiding (preorder; setoid)
 
 -- just a convenient way to section out the universe level
 module _ {a} where
@@ -33,7 +34,7 @@ module _ {a} where
   monad : RawMonad (∞ {a})
   monad = record
     { return = ♯_
-    ; _>>=_ = λ x f → ♯ ♭ (f (♭ x))
+    ; _>>=_  = λ x f → ♯ ♭ (f (♭ x))
     }
 
   open RawMonad monad public
@@ -49,6 +50,28 @@ module _ {a} where
       ♭≡ : ∞ (♭ x ≡ ♭ y)
 
   open _∞≡_ public
+
+  infix 1000 ♯≡′_
+
+  ♯≡′_ : {A : Set a} {x : ∞ A} {y : ∞ A} → ♭ x ≡ ♭ y → x ∞≡ y
+  ♯≡′_ p = ♯≡ ♯ p
+  
+  ♭≡′ : {A : Set a} {x : ∞ A} {y : ∞ A} → x ∞≡ y → ♭ x ≡ ♭ y
+  ♭≡′ p = ♭ (♭≡ p)
+
+  setoid : (A : Set a) → Setoid _ _
+  setoid A = record
+    { Carrier       = ∞ A
+    ; _≈_           = _∞≡_
+    ; isEquivalence = record
+      { refl          = ♯≡′ refl
+      ; sym           = λ p → ♯≡′ sym (♭ (♭≡ p))
+      ; trans         = λ pₗ pᵣ → ♯≡′ trans (♭≡′ pₗ) (♭≡′ pᵣ)
+      }
+    }
+
+  module _ {A : Set a} where
+    open Setoid (setoid A) public using (preorder) renaming (refl to ∞refl ; reflexive to ∞reflexive ; sym to ∞sym ; trans to ∞trans )
 
 ------------------------------------------------------------------------
 -- Rec, a type which is analogous to the Rec type constructor used in

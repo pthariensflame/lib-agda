@@ -6,7 +6,7 @@
 
 module Data.Conat where
 
-open import Coinduction
+open import Coinduction hiding (preorder; setoid)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Nat using (ℕ; zero; suc)
 open import Relation.Binary
@@ -66,6 +66,8 @@ setoid = record
   trans : Transitive _≈_
   trans zero      zero      = zero
   trans (suc m≈n) (suc n≈k) = suc (♯ trans (♭ m≈n) (♭ n≈k))
+
+open Setoid setoid using (preorder)
 
 ------------------------------------------------------------------------
 -- Order
