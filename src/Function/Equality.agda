@@ -102,5 +102,7 @@ From ⇨ To = setoid From (B.Setoid.indexedSetoid To)
 
 -- The non-dependent version of ≡-setoid
 
+infixr 0 _⇨′_
+
 _⇨′_ : ∀ {f t₁ t₂} → (From : Set f) → B.Setoid t₁ t₂ → B.Setoid _ _
 From ⇨′ To = ≡-setoid From (B.Setoid.indexedSetoid To)
