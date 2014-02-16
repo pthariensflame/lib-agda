@@ -61,9 +61,9 @@ data Op : Set where
 -- The polynomials are indexed by the number of variables.
 
 data Polynomial (m : ℕ) : Set r₁ where
-  op   : (o : Op) (p₁ : Polynomial m) (p₂ : Polynomial m) → Polynomial m
-  con  : (c : C.Carrier) → Polynomial m
   var  : (x : Fin m) → Polynomial m
+  con  : (c : C.Carrier) → Polynomial m
+  op   : (o : Op) (p₁ : Polynomial m) (p₂ : Polynomial m) → Polynomial m
   _:^_ : (p : Polynomial m) (n : ℕ) → Polynomial m
   :-_  : (p : Polynomial m) → Polynomial m
 
@@ -533,7 +533,7 @@ correct (:- p) ρ = begin
 -- "Tactics"
 
 open Reflection setoid var ⟦_⟧ ⟦_⟧↓ correct public
-  using (prove; solve) renaming (_⊜_ to _:=_)
+  using (prove; solve; solve₁) renaming (_⊜_ to _:=_)
 
 -- For examples of how solve and _:=_ can be used to
 -- semi-automatically prove ring equalities, see, for instance,
