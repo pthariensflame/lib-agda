@@ -12,7 +12,7 @@ open import Relation.Nullary
 
 infixr 4 _,_ _,′_
 infix  4 ,_
-infixr 2 _×_ _-×-_ _-,-_
+infixr 2 Σ-syntax _×_ _-×-_ _-,-_ _-,′-_
 
 ------------------------------------------------------------------------
 -- Definition
@@ -69,7 +69,12 @@ _,′_ = _,_
 <_,_> : ∀ {a b c} {A : Set a} {B : A → Set b} {C : ∀ {x} → B x → Set c}
         (f : (x : A) → B x) → ((x : A) → C (f x)) →
         ((x : A) → Σ (B x) C)
-< f , g > x = (f x , g x)
+< f , g > x = f x , g x
+
+<′_,′_‵> : ∀ {a b c} {A : Set a} {B : Set b} {C : Set c} →
+        (A → B) → (A → C) →
+        (A → B × C)
+<′_,′_‵> = <_,_>
 
 map : ∀ {a b p q}
         {A : Set a} {B : Set b} {P : A → Set p} {Q : B → Set q} →
@@ -90,11 +95,15 @@ swap (x , y) = (y , x)
 
 _-×-_ : ∀ {a b i j} {A : Set a} {B : Set b} →
         (A → B → Set i) → (A → B → Set j) → (A → B → Set _)
-f -×- g = f -[ _×_ ]- g
+f -×- g = f -[′ _×_ ‵]- g
 
-_-,-_ : ∀ {a b c d} {A : Set a} {B : Set b} {C : Set c} {D : Set d} →
+_-,-_ : ∀ {a b c d} {A : Set a} {B : A → Set b} {C : (x : A) → B x → Set c} {D : (x : A) → (y : B x) → C x y → Set d} →
+        (f : (x : A) → (y : B x) → C x y) → ((x : A) → (y : B x) → D x y (f x y)) → ((x : A) → (y : B x) → Σ (C x y) (D x y))
+f -,- g = λ x y → f x y , g x y
+
+_-,′-_ : ∀ {a b c d} {A : Set a} {B : Set b} {C : Set c} {D : Set d} →
         (A → B → C) → (A → B → D) → (A → B → C × D)
-f -,- g = f -[ _,_ ]- g
+_-,′-_ = _-,-_
 
 curry : ∀ {a b c} {A : Set a} {B : A → Set b} {C : Σ A B → Set c} →
         ((p : Σ A B) → C p) →

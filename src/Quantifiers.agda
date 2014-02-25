@@ -37,7 +37,7 @@ data _∈_by_ {i j} {A : Set i} : A → {n : ℕ} → Vec A n → (A → A → S
 
 -- for all but finitely many
 ∀⁺ : ∀{i j k} → {A : Set i} → (A → A → Set k) → (A → Set j) → Set (i ⊔ j ⊔ succ k)
-∀⁺ {A = A} _≈_ P = Σ[ n ∈ ℕ ] Σ[ xs ∈ Vec A n ] All (λ (x : A) → ¬ P x) xs × ((x : A) → ¬ P x → x ∈ xs by _≈_)
+∀⁺ {A = A} _≈_ P = Σ[ n ∈ ℕ ] Σ[ xs ∈ Vec A n ] (All (λ (x : A) → ¬ P x) xs × ((x : A) → ¬ P x → x ∈ xs by _≈_))
 
 open Data.Product public using ( ∃! )
 
