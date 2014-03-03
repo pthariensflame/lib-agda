@@ -214,7 +214,12 @@ lookup : ∀ {a n} {A : Set a} → Fin n → Vec A n → A
 lookup zero    (x ∷ xs) = x
 lookup (suc i) (x ∷ xs) = lookup i xs
 
--- An inverse of flip lookup.
+-- A synonym for flip_lookup
+
+lookup′ : ∀ {a n} {A : Set a} → Vec A n → Fin n → A
+lookup′ = flip lookup
+
+-- An inverse of lookup′.
 
 tabulate : ∀ {n a} {A : Set a} → (Fin n → A) → Vec A n
 tabulate {zero}  f = []
