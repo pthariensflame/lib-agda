@@ -16,7 +16,7 @@ open import Function
 open import Function.Equality using (_⟨$⟩_)
 open import Function.Equivalence as Equiv
   using (_⇔_; ⇔-setoid; module Equivalence)
-import Level
+import Level as L
 open import Relation.Binary
 open import Relation.Binary.PropositionalEquality as P using (_≡_)
 open import Relation.Nullary
@@ -24,8 +24,8 @@ import Relation.Nullary.Decidable as Dec
 
 -- Functional definition.
 
-record Pointwise {ℓ} {A B : Set ℓ} (_∼_ : REL A B ℓ)
-                 {n} (xs : Vec A n) (ys : Vec B n) : Set ℓ where
+record Pointwise {ℓ₁ ℓ₂} {A B : Set ℓ₁} (_∼_ : REL A B ℓ₂)
+                 {n} (xs : Vec A n) (ys : Vec B n) : Set (ℓ₁ L.⊔ ℓ₂) where
   constructor ext
   field app : ∀ i → lookup i xs ∼ lookup i ys
 
@@ -33,8 +33,8 @@ record Pointwise {ℓ} {A B : Set ℓ} (_∼_ : REL A B ℓ)
 
 infixr 5 _∷_
 
-data Pointwise′ {ℓ} {A B : Set ℓ} (_∼_ : REL A B ℓ) :
-                ∀ {n} (xs : Vec A n) (ys : Vec B n) → Set ℓ where
+data Pointwise′ {ℓ₁ ℓ₂} {A B : Set ℓ₁} (_∼_ : REL A B ℓ₂) :
+                ∀ {n} (xs : Vec A n) (ys : Vec B n) → Set (ℓ₁ L.⊔ ℓ₂) where
   []  : Pointwise′ _∼_ [] []
   _∷_ : ∀ {n x y} {xs : Vec A n} {ys : Vec B n}
         (x∼y : x ∼ y) (xs∼ys : Pointwise′ _∼_ xs ys) →
@@ -42,7 +42,7 @@ data Pointwise′ {ℓ} {A B : Set ℓ} (_∼_ : REL A B ℓ) :
 
 -- The two definitions are equivalent.
 
-equivalent : ∀ {ℓ} {A B : Set ℓ} {_∼_ : REL A B ℓ} {n}
+equivalent : ∀ {ℓ₁ ℓ₂} {A B : Set ℓ₁} {_∼_ : REL A B ℓ₂} {n}
                {xs : Vec A n} {ys : Vec B n} →
              Pointwise _∼_ xs ys ⇔ Pointwise′ _∼_ xs ys
 equivalent {A = A} {B} {_∼_} = Equiv.equivalence (to _ _) from
@@ -72,30 +72,30 @@ equivalent {A = A} {B} {_∼_} = Equiv.equivalence (to _ _) from
 
 -- Some destructors.
 
-head : ∀ {ℓ} {A B : Set ℓ} {_∼_ : REL A B ℓ} {n x y xs} {ys : Vec B n} →
+head : ∀ {ℓ₁ ℓ₂} {A B : Set ℓ₁} {_∼_ : REL A B ℓ₂} {n x y xs} {ys : Vec B n} →
        Pointwise′ _∼_ (x ∷ xs) (y ∷ ys) → x ∼ y
 head (x∼y ∷ xs∼ys) = x∼y
 
-tail : ∀ {ℓ} {A B : Set ℓ} {_∼_ : REL A B ℓ} {n x y xs} {ys : Vec B n} →
+tail : ∀ {ℓ₁ ℓ₂} {A B : Set ℓ₁} {_∼_ : REL A B ℓ₂} {n x y xs} {ys : Vec B n} →
        Pointwise′ _∼_ (x ∷ xs) (y ∷ ys) → Pointwise′ _∼_ xs ys
 tail (x∼y ∷ xs∼ys) = xs∼ys
 
 -- Pointwise preserves reflexivity.
 
-refl : ∀ {ℓ} {A : Set ℓ} {_∼_ : Rel A ℓ} {n} →
+refl : ∀ {ℓ₁ ℓ₂} {A : Set ℓ₁} {_∼_ : Rel A ℓ₂} {n} →
        Reflexive _∼_ → Reflexive (Pointwise _∼_ {n = n})
 refl rfl = ext (λ _ → rfl)
 
 -- Pointwise preserves symmetry.
 
-sym : ∀ {ℓ} {A B : Set ℓ} {P : REL A B ℓ} {Q : REL B A ℓ} {n} →
+sym : ∀ {ℓ₁ ℓ₂} {A B : Set ℓ₁} {P : REL A B ℓ₂} {Q : REL B A ℓ₂} {n} →
       Sym P Q → Sym (Pointwise P) (Pointwise Q {n = n})
 sym sm xs∼ys = ext λ i → sm (Pointwise.app xs∼ys i)
 
 -- Pointwise preserves transitivity.
 
-trans : ∀ {ℓ} {A B C : Set ℓ}
-          {P : REL A B ℓ} {Q : REL B C ℓ} {R : REL A C ℓ} {n} →
+trans : ∀ {ℓ₁ ℓ₂} {A B C : Set ℓ₁}
+          {P : REL A B ℓ₂} {Q : REL B C ℓ₂} {R : REL A C ℓ₂} {n} →
         Trans P Q R →
         Trans (Pointwise P) (Pointwise Q) (Pointwise R {n = n})
 trans trns xs∼ys ys∼zs = ext λ i →
@@ -104,7 +104,7 @@ trans trns xs∼ys ys∼zs = ext λ i →
 -- Pointwise preserves equivalences.
 
 isEquivalence :
-  ∀ {ℓ} {A : Set ℓ} {_∼_ : Rel A ℓ} {n} →
+  ∀ {ℓ₁ ℓ₂} {A : Set ℓ₁} {_∼_ : Rel A ℓ₂} {n} →
   IsEquivalence _∼_ → IsEquivalence (Pointwise _∼_ {n = n})
 isEquivalence equiv = record
   { refl  = refl  (IsEquivalence.refl  equiv)
@@ -112,9 +112,16 @@ isEquivalence equiv = record
   ; trans = trans (IsEquivalence.trans equiv)
   }
 
+setoid : ∀ {ℓ₁ ℓ₂} (A : Setoid ℓ₁ ℓ₂) → ℕ → Setoid _ _
+setoid A n = record
+  { Carrier       = Vec           (Setoid.Carrier       A) n
+  ; _≈_           = Pointwise     (Setoid._≈_           A)
+  ; isEquivalence = isEquivalence (Setoid.isEquivalence A)
+  }
+
 -- Pointwise preserves decidability.
 
-decidable : ∀ {ℓ} {A B : Set ℓ} {_∼_ : REL A B ℓ} →
+decidable : ∀ {ℓ₁ ℓ₂} {A B : Set ℓ₁} {_∼_ : REL A B ℓ₂} →
             Decidable _∼_ → ∀ {n} → Decidable (Pointwise _∼_ {n = n})
 decidable {_∼_ = _∼_} dec xs ys =
   Dec.map (Setoid.sym (⇔-setoid _) equivalent) (decidable′ xs ys)
@@ -126,6 +133,16 @@ decidable {_∼_ = _∼_} dec xs ys =
   ... | yes x∼y with decidable′ xs ys
   ...   | no ¬xs∼ys = no (¬xs∼ys ∘ tail)
   ...   | yes xs∼ys = yes (x∼y ∷ xs∼ys)
+
+decSetoid : ∀ {ℓ₁ ℓ₂} (A : DecSetoid ℓ₁ ℓ₂) → ℕ → DecSetoid _ _
+decSetoid A n = record
+  { Carrier          = Vec           (DecSetoid.Carrier       A) n
+  ; _≈_              = Pointwise     (DecSetoid._≈_           A)
+  ; isDecEquivalence = record
+    { isEquivalence  = isEquivalence (DecSetoid.isEquivalence A)
+    ; _≟_            = decidable     (DecSetoid._≟_           A)
+    }
+  }
 
 -- Pointwise _≡_ is equivalent to _≡_.
 
@@ -143,20 +160,20 @@ Pointwise-≡ {ℓ} {A} =
 -- Pointwise and Plus commute when the underlying relation is
 -- reflexive.
 
-⁺∙⇒∙⁺ : ∀ {ℓ} {A : Set ℓ} {_∼_ : Rel A ℓ} {n} {xs ys : Vec A n} →
+⁺∙⇒∙⁺ : ∀ {ℓ₁ ℓ₂} {A : Set ℓ₁} {_∼_ : Rel A ℓ₂} {n} {xs ys : Vec A n} →
         Plus (Pointwise _∼_) xs ys → Pointwise (Plus _∼_) xs ys
 ⁺∙⇒∙⁺ [ ρ≈ρ′ ]             = ext (λ x → [ Pointwise.app ρ≈ρ′ x ])
 ⁺∙⇒∙⁺ (ρ ∼⁺⟨ ρ≈ρ′ ⟩ ρ′≈ρ″) =
   ext (λ x → _ ∼⁺⟨ Pointwise.app (⁺∙⇒∙⁺ ρ≈ρ′ ) x ⟩
                    Pointwise.app (⁺∙⇒∙⁺ ρ′≈ρ″) x)
 
-∙⁺⇒⁺∙ : ∀ {ℓ} {A : Set ℓ} {_∼_ : Rel A ℓ} {n} {xs ys : Vec A n} →
+∙⁺⇒⁺∙ : ∀ {ℓ₁ ℓ₂} {A : Set ℓ₁} {_∼_ : Rel A ℓ₂} {n} {xs ys : Vec A n} →
         Reflexive _∼_ →
         Pointwise (Plus _∼_) xs ys → Plus (Pointwise _∼_) xs ys
-∙⁺⇒⁺∙ {ℓ} {A} {_∼_} x∼x =
-  Plus.map (_⟨$⟩_ {f₂ = ℓ} (Equivalence.from equivalent)) ∘
+∙⁺⇒⁺∙ {ℓ₁} {ℓ₂} {A} {_∼_} x∼x =
+  Plus.map (_⟨$⟩_ {f₂ = ℓ₁ L.⊔ ℓ₂} (Equivalence.from equivalent)) ∘
   helper ∘
-  _⟨$⟩_ {f₂ = ℓ} (Equivalence.to equivalent)
+  _⟨$⟩_ {f₂ = ℓ₁ L.⊔ ℓ₂} (Equivalence.to equivalent)
   where
   helper : ∀ {n} {xs ys : Vec A n} →
            Pointwise′ (Plus _∼_) xs ys → Plus (Pointwise′ _∼_) xs ys
@@ -167,7 +184,7 @@ Pointwise-≡ {ℓ} {A} =
     y ∷ ys  ∎
     where
     xs∼xs : Pointwise′ _∼_ xs xs
-    xs∼xs = _⟨$⟩_ {f₂ = ℓ} (Equivalence.to equivalent) (refl x∼x)
+    xs∼xs = _⟨$⟩_ {f₂ = ℓ₁ L.⊔ ℓ₂} (Equivalence.to equivalent) (refl x∼x)
 
 -- Note that ∙⁺⇒⁺∙ cannot be defined if the requirement of reflexivity
 -- is dropped.
@@ -179,7 +196,7 @@ private
   data D : Set where
     i j x y z : D
 
-  data _R_ : Rel D Level.zero where
+  data _R_ : Rel D L.zero where
     iRj : i R j
     xRy : x R y
     yRz : y R z
@@ -215,15 +232,15 @@ private
 
 -- Map.
 
-map : ∀ {ℓ} {A : Set ℓ} {_R_ _R′_ : Rel A ℓ} {n} →
+map : ∀ {ℓ₁ ℓ₂} {A : Set ℓ₁} {_R_ _R′_ : Rel A ℓ₂} {n} →
       _R_ ⇒ _R′_ → Pointwise _R_ ⇒ Pointwise _R′_ {n}
 map R⇒R′ xsRys = ext λ i →
   R⇒R′ (Pointwise.app xsRys i)
 
 -- A variant.
 
-gmap : ∀ {ℓ} {A A′ : Set ℓ}
-         {_R_ : Rel A ℓ} {_R′_ : Rel A′ ℓ} {f : A → A′} {n} →
+gmap : ∀ {ℓ₁ ℓ₂} {A A′ : Set ℓ₁}
+         {_R_ : Rel A ℓ₂} {_R′_ : Rel A′ ℓ₂} {f : A → A′} {n} →
        _R_ =[ f ]⇒ _R′_ →
        Pointwise _R_ =[ Vec.map {n = n} f ]⇒ Pointwise _R′_
 gmap {_R′_ = _R′_} {f} R⇒R′ {i = xs} {j = ys} xsRys = ext λ i →
