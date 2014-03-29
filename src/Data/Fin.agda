@@ -167,11 +167,15 @@ n     ℕ-ℕ zero   = n
 zero  ℕ-ℕ suc ()
 suc n ℕ-ℕ suc i  = n ℕ-ℕ i
 
--- pred "n" = "pred n".
+-- pred⋆ "n" = "pred n".
 
 pred : ∀ {n} → Fin n → Fin n
 pred zero    = zero
 pred (suc i) = inject₁ i
+
+pred′ : ∀ {n} (i : Fin (suc n)) {p : zero ℕ< toℕ i} → Fin n
+pred′ zero {()}
+pred′ (suc i) = i
 
 ------------------------------------------------------------------------
 -- Order relations
