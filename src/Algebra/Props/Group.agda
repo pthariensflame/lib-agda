@@ -14,7 +14,7 @@ import Relation.Binary.EqReasoning as EqR; open EqR setoid
 open import Function
 open import Data.Product
 
-⁻¹-involutive : ∀ x → x ⁻¹ ⁻¹ ≈ x
+⁻¹-involutive : Involutive _⁻¹
 ⁻¹-involutive x = begin
   x ⁻¹ ⁻¹               ≈⟨ sym $ proj₂ identity _ ⟩
   x ⁻¹ ⁻¹ ∙ ε           ≈⟨ refl ⟨ ∙-cong ⟩ sym (proj₁ inverse _) ⟩
