@@ -18,6 +18,7 @@ import Relation.Binary.PropositionalEquality as P
 record Equivalence {f₁ f₂ t₁ t₂}
                    (From : Setoid f₁ f₂) (To : Setoid t₁ t₂) :
                    Set (f₁ ⊔ f₂ ⊔ t₁ ⊔ t₂) where
+  constructor equivalence′
   field
     to   : From ⟶ To
     from : To ⟶ From

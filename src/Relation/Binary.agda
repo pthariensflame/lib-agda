@@ -58,7 +58,7 @@ record Preorder c ℓ₁ ℓ₂ : Set (suc (c ⊔ ℓ₁ ⊔ ℓ₂)) where
 
   indexedPreorder : ∀ {i} {I : Set i} → I.Preorder I c _ _
   indexedPreorder = record
-    { Carrier = λ _ → Carrier
+    { Carrier = const Carrier
     ; _≈_     = _≈_
     ; _∼_     = _∼_
     ; isPreorder = record
@@ -149,7 +149,7 @@ record DecSetoid c ℓ : Set (suc (c ⊔ ℓ)) where
   setoid : Setoid c ℓ
   setoid = record { isEquivalence = isEquivalence }
 
-  open Setoid setoid public using (preorder)
+  open Setoid setoid public using (preorder; indexedSetoid)
 
 ------------------------------------------------------------------------
 -- Partial orders

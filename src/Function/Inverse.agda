@@ -160,3 +160,25 @@ sym inv = record
     ; right-inverse-of = left-inverse-of
     }
   } where open Inverse inv
+
+Inverse-setoid : ∀ i₁ i₂ → Setoid _ _
+Inverse-setoid i₁ i₂ = record
+  { Carrier = Setoid i₁ i₂
+  ; _≈_ = Inverse
+  ; isEquivalence = record
+    { refl = id
+    ; sym = sym
+    ; trans = flip _∘_
+    }
+  }
+
+↔-setoid : ∀ i → Setoid _ _
+↔-setoid i = record
+  { Carrier = Set i
+  ; _≈_ = _↔_
+  ; isEquivalence = record
+    { refl = id
+    ; sym = sym
+    ; trans = flip _∘_
+    }
+  }
